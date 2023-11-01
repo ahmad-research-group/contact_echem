@@ -1,3 +1,4 @@
+#Dir bc on left of both, potential continuity
 [GlobalParams]
   omega = 10.0
 []
