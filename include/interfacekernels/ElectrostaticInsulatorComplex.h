@@ -27,11 +27,10 @@ public:
 protected:
   virtual ADReal computeQpResidual(Moose::DGResidualType type) override;
 
+  const Real & _omega;
   const ADMaterialProperty<Real> & _sigma;
   const ADMaterialProperty<Real> & _eps;
   const ADMaterialProperty<Real> & _eps_neighbor;
   const ADVariableGradient & _grad_pot1im;
-  const Real & _omega;
-//#  const Coupled
 
 };
