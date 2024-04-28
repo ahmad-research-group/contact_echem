@@ -10,6 +10,7 @@
 #pragma once
 
 #include "ADInterfaceKernel.h"
+#include "DerivativeMaterialPropertyNameInterface.h"
 #include "Function.h"
 
 /**
@@ -17,7 +18,7 @@
  *  and gradient relationship as a result of contact between two dissimilar,
  *  homogeneous materials.
  */
-class ElectrostaticInsulatorComplex : public ADInterfaceKernel
+class ElectrostaticInsulatorComplex : public ADInterfaceKernel, public DerivativeMaterialPropertyNameInterface
 {
 public:
   static InputParameters validParams();
@@ -28,9 +29,17 @@ protected:
   virtual ADReal computeQpResidual(Moose::DGResidualType type) override;
 
   const Real & _omega;
-  const ADMaterialProperty<Real> & _sigma;
-  const ADMaterialProperty<Real> & _eps;
-  const ADMaterialProperty<Real> & _eps_neighbor;
+  const ADMaterialProperty<Real> & _sigma, & _sigma_neighbor;
+  const ADMaterialProperty<Real> & _eps, & _eps_neighbor;
   const ADVariableGradient & _grad_pot1im;
-
+  const ADMaterialProperty<Real> & _D, & _D_neighbor;
+  const ADVariableValue & _pot2re;
+  const ADVariableGradient & _grad_pot2re;
+  VariableName _pot2re_name;
+  const ADMaterialProperty<Real> & _cpos;
+  const MaterialPropertyName & _cpos_name;
+  const ADMaterialProperty<Real> & _dcpos_dphi;
+  const ADMaterialProperty<Real> & _cpos_neighbor;
+  const MaterialPropertyName & _cpos_neighbor_name;
+  const ADMaterialProperty<Real> &_dcpos_neighbor_dphi;
 };
