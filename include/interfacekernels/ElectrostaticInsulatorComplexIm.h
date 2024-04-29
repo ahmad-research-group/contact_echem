@@ -32,12 +32,7 @@ protected:
   const ADMaterialProperty<Real> & _sigma, & _sigma_neighbor;
   const ADMaterialProperty<Real> & _eps, & _eps_neighbor;
   const ADMaterialProperty<Real> & _D, & _D_neighbor;
-  VariableName _pot1re_name;
-  const ADVariableGradient & _grad_pot2im, _grad_pot1re;
-  const ADMaterialProperty<Real> & _cpos;
-  const MaterialPropertyName & _cpos_name;
+  const ADVariableGradient & _grad_pot2im, & _grad_pot1re;
   const ADMaterialProperty<Real> & _dcpos_dphi;
-  const ADMaterialProperty<Real> & _cpos_neighbor;
-  const MaterialPropertyName & _cpos_neighbor_name;
-  const ADMaterialProperty<Real> &_dcpos_neighbor_dphi;
+  const ADMaterialProperty<Real> & _dcpos_neighbor_dphi;
 };

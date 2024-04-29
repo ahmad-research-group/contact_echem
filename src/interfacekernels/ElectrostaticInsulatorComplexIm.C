@@ -33,14 +33,13 @@ ElectrostaticInsulatorComplexIm::validParams()
   params.addRequiredParam<MaterialPropertyName>(
       "primary_conc", "Concentration on the primary block.");
   params.addRequiredParam<MaterialPropertyName>(
-      "secondary_conc", "Concentration on the secondary block.");  
+      "secondary_conc", "Concentration on the secondary block.");
   params.addClassDescription(
       "Interface condition that describes the current continuity and contact conductance across a "
       "boundary formed between two dissimilar materials (resulting in a potential discontinuity). "
       "Conductivity on each side of the boundary is defined via the material properties system.");
   return params;
   // kernel var = phi1i, neighbor var = phi2r
-  // kernel: - \nabla omega eps2 \nabla phi2r
 }
 
 ElectrostaticInsulatorComplexIm::ElectrostaticInsulatorComplexIm(const InputParameters & parameters)
@@ -52,15 +51,10 @@ ElectrostaticInsulatorComplexIm::ElectrostaticInsulatorComplexIm(const InputPara
     _eps_neighbor(getNeighborADMaterialProperty<Real>("secondary_permittivity")),
     _D(getADMaterialProperty<Real>("primary_diffusivity")),
     _D_neighbor(getNeighborADMaterialProperty<Real>("secondary_diffusivity")),
-    _pot1re_name(coupledName("pot1re")), 
-    _grad_pot2im(adCoupledGradient("pot2im")),
+    _grad_pot2im(adCoupledNeighborGradient("pot2im")),
     _grad_pot1re(adCoupledGradient("pot1re")),
-    _cpos(getADMaterialProperty<Real>("primary_conc")),
-    _cpos_name(getParam<MaterialPropertyName>("primary conc")),
-    _dcpos_dphi(getADMaterialProperty<Real>(derivativePropertyNameFirst(_cpos_name, _pot1re_name))),
-    _cpos_neighbor(getNeighborADMaterialProperty<Real>("secondary_conc")),
-    _cpos_neighbor_name(getParam<MaterialPropertyName>("secondary conc")),
-    _dcpos_neighbor_dphi(getNeighborADMaterialProperty<Real>(derivativePropertyNameFirst(_cpos_neighbor_name, _var.name())))
+    _dcpos_dphi(getADMaterialProperty<Real>("primary_conc")),
+    _dcpos_neighbor_dphi(getNeighborADMaterialProperty<Real>("secondary_conc"))
 {
 }
 
@@ -72,12 +66,19 @@ ElectrostaticInsulatorComplexIm::computeQpResidual(Moose::DGResidualType type)
   switch (type)
   {
     case Moose::Element:
-      r = -_test[_i][_qp] * ( _omega * ( _eps_neighbor[_qp] * _grad_neighbor_value[_qp] - _eps[_qp] * _grad_pot1re[_qp] ) + _sigma_neighbor[_qp] * _grad_pot2im[_qp] + _D_neighbor[_qp] * _dcpos_neighbor_dphi[_qp] * _grad_neighbor_value[_qp] - _D[_qp] * _dcpos_dphi[_qp] * _grad_pot1re[_qp] ) * _normals[_qp];
+      r = -_test[_i][_qp] * ( _omega * ( _eps_neighbor[_qp] * _grad_neighbor_value[_qp] 
+      - _eps[_qp] * _grad_pot1re[_qp] ) + _sigma_neighbor[_qp] * _grad_pot2im[_qp] 
+      - _dcpos_neighbor_dphi[_qp] * _grad_neighbor_value[_qp] 
+      + _dcpos_dphi[_qp] * _grad_pot1re[_qp] ) * _normals[_qp];
       // var = phi1i, neighbor var = phi2r; kernel: - \nabla sigma \nabla phi1_i
+      // dcposdphi is -D * dcpos_dphi
       break;
 
     case Moose::Neighbor:
-      r = _test_neighbor[_i][_qp] * ( _omega * _eps[_qp] * _grad_pot1re[_qp] + _sigma[_qp] * _grad_u[_qp] + _D[_qp] * _dcpos_dphi[_qp] * _grad_pot1re[_qp] - _D_neighbor[_qp] * _dcpos_neighbor_dphi[_qp] * _grad_neighbor_value[_qp] ) * _normals[_qp];
+      r = _test_neighbor[_i][_qp] * ( _omega * _eps[_qp] * _grad_pot1re[_qp] 
+      + _sigma[_qp] * _grad_u[_qp] - _dcpos_dphi[_qp] * _grad_pot1re[_qp] 
+      + _dcpos_neighbor_dphi[_qp] * _grad_neighbor_value[_qp] ) * _normals[_qp];
+      // kernel: - \nabla omega eps2 \nabla phi2r
       break;
   }
 
