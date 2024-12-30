@@ -5,7 +5,7 @@ omega = OMEGAVALUE
 [Mesh]
   [./fmg]
     type = FileMeshGenerator
-    file = './only_by_gmsh.msh'  #put the correct mesh file name here
+    file = './only_by_gmsh_1_hole.msh'  #put the correct mesh file name here
   []
   [./rename]
   type = RenameBlockGenerator
