@@ -25,19 +25,12 @@ mpirun -np 8 ./contact_echem-opt -i different_contact_area.i
 ## How to cite
 
 ```
-@misc{limonConstrictionContactImpedance2025,
-  title = {Constriction and Contact Impedance of Ceramic Solid Electrolytes},
-  author = {Limon, Md Salman Rabbi and Duffee, Curtis and Ahmad, Zeeshan},
-  year = {2025},
-  month = jan,
-  number = {arXiv:2501.00600},
-  eprint = {2501.00600},
-  primaryclass = {cond-mat},
-  publisher = {arXiv},
+@article{limon2024constriction,
+  title={Constriction and contact impedance of ceramic solid electrolytes},
+  author={Limon, Md Salman Rabbi and Duffee, Curtis and Ahmad, Zeeshan},
+  journal={arXiv preprint arXiv:2501.00600},
   doi = {10.48550/arXiv.2501.00600},
-  urldate = {2025-01-09},
-  archiveprefix = {arXiv},
-  keywords = {Condensed Matter - Materials Science,Physics - Applied Physics}
+  year={2024}
 }
 
 ```
